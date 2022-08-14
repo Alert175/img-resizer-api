@@ -1,0 +1,13 @@
+version: "3.7"
+
+services:
+  img-resizer-api:
+    container_name: img-resizer-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./public:/app/public
+
+volumes:
+  public:
