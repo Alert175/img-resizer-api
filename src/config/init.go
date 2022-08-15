@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/davidbyttow/govips/v2/vips"
 	"github.com/joho/godotenv"
 
 	"img-resizer-api/src/infrastructure/adapter/http"
@@ -11,6 +12,7 @@ import (
 
 func InitConfig() error {
 	envInit()
+	vips.Startup(nil)
 	defer http.InitHttpAdapter()
 	return nil
 }

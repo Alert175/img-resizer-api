@@ -11,6 +11,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 
 	_ "img-resizer-api/docs"
+	imagerouter "img-resizer-api/src/infrastructure/adapter/http/image-router"
 
 	"github.com/gofiber/swagger"
 )
@@ -44,6 +45,8 @@ func InitHttpAdapter() {
 	appPath := app.Group(pathPrefix)
 
 	appPath.Get("/swagger/*", swagger.HandlerDefault)
+
+	imagerouter.Register(appPath)
 
 	app.Listen(":" + port)
 }
