@@ -75,3 +75,27 @@ func LoadFromNetResizeConvert(ctx *fiber.Ctx) error {
 	appPath := os.Getenv("HTTP_PATH_PREFIX")
 	return ctx.JSON(strings.ReplaceAll(result, "public", appPath))
 }
+
+func Optimize(ctx *fiber.Ctx) error {
+	image := imageRepo.ImageModel{}
+
+	body := new(OptimizeDto)
+	if err := ctx.BodyParser(body); err != nil {
+		return err
+	}
+	if errV := utils.Validate(body); errV != nil {
+		return ctx.Status(400).JSON(errV)
+	}
+	appPath := os.Getenv("HTTP_PATH_PREFIX")
+
+	resultList, err := image.InstallFromNetworkAndOptimize(body.Url, body.Points)
+	if err != nil {
+		return ctx.Status(500).JSON(err)
+	}
+	validResultList := []string{}
+	for _, str := range resultList {
+		validResultList = append(validResultList, strings.ReplaceAll(str, "public", appPath))
+	}
+
+	return ctx.JSON(validResultList)
+}

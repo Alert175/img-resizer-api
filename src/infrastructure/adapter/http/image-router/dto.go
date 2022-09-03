@@ -1,16 +1,22 @@
 package imagerouter
 
+import imageRepo "img-resizer-api/src/infrastructure/repository/image"
+
 type LoadFromNetDto struct {
 	Url string `json:"url" validate:"required"`
 }
 
 type LoadFromNetDtoAndResize struct {
 	LoadFromNetDto
-	Height int `json:"height"`
-	Width  int `json:"width"`
+	imageRepo.ResizeDto
 }
 
 type LoadFromNetDtoAndResizeAndConvert struct {
 	LoadFromNetDtoAndResize
-	Format string `json:"format" validate:"required"`
+	imageRepo.FormatDto
+}
+
+type OptimizeDto struct {
+	LoadFromNetDto
+	Points []imageRepo.Point `json:"points" validate:"required"`
 }

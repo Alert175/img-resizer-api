@@ -40,7 +40,6 @@ func (image *ImageModel) saveTo(path string) (string, error) {
 // получить поток байтов для сохранении в файл
 func (image *ImageModel) getOutBytes() ([]byte, error) {
 	var resultByte []byte
-	// TODO: дописать все остальные типы изображений
 	switch image.Type {
 	case 3:
 		bytes, _, errE := image.Ref.ExportPng(vips.NewPngExportParams())
@@ -58,6 +57,13 @@ func (image *ImageModel) getOutBytes() ([]byte, error) {
 		}
 	case 2:
 		bytes, _, errE := image.Ref.ExportWebp(vips.NewWebpExportParams())
+		if errE != nil {
+			return bytes, errE
+		} else {
+			resultByte = bytes
+		}
+	case 11:
+		bytes, _, errE := image.Ref.ExportAvif(vips.NewAvifExportParams())
 		if errE != nil {
 			return bytes, errE
 		} else {

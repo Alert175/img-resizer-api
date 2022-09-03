@@ -72,3 +72,34 @@ func (image *ImageModel) InstallFromNetworkAndResizeAndConvert(url string, heigh
 	}
 	return result, nil
 }
+
+// Загрузить изображения по сети и установить необходимые параметры
+func (image *ImageModel) InstallFromNetworkAndOptimize(url string, points []Point) ([]string, error) {
+	err := image.loadFormNet(url)
+	if err != nil {
+		logger.Error(err)
+	}
+
+	validPath, err := utils.ConvertToPathFormat(url)
+	if err != nil {
+		return nil, err
+	}
+
+	resultList := []string{}
+
+	for _, point := range points {
+		if err := image.resize(point.Width, point.Height); err != nil {
+			return nil, err
+		}
+		if err := image.convertTo(point.Format); err != nil {
+			return nil, err
+		}
+		result, err := image.saveTo(validPath)
+		if err != nil {
+			return nil, err
+		}
+		resultList = append(resultList, result)
+	}
+
+	return resultList, nil
+}
