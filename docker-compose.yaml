@@ -8,6 +8,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./public:/app/public
+    ports:
+      - "8000:8000"
 
 volumes:
   public:

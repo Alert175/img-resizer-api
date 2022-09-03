@@ -2,14 +2,14 @@ package image
 
 import (
 	"crypto/tls"
-	"img-resizer-api/src/infrastructure/pkg/utils/logger"
 	"io/ioutil"
 	"net/http"
 
 	"github.com/davidbyttow/govips/v2/vips"
 )
 
-func InstallNet(url string) error {
+// Загрузить изображение по http и установить необходимые данные
+func (image *ImageModel) loadFormNet(url string) error {
 	request, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return err
@@ -32,20 +32,17 @@ func InstallNet(url string) error {
 		return err
 	}
 
-	// defer vips.Shutdown()
-
 	imageRef, err := vips.LoadImageFromBuffer(body, nil)
 	if err != nil {
 		return err
 	}
 
-	width := imageRef.Width()
-	height := imageRef.Height()
-	imageType := vips.DetermineImageType(body)
-
-	logger.Log(width)
-	logger.Log(height)
-	logger.Log(imageType)
+	image.Ref = imageRef
+	image.Buffer = body
+	image.Width = imageRef.Width()
+	image.Height = imageRef.Height()
+	image.Type = vips.DetermineImageType(body)
+	image.Name = "origin"
 
 	return nil
 }

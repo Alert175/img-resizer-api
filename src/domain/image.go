@@ -1,27 +1,16 @@
 package domain
 
-import (
-	"img-resizer-api/src/infrastructure/pkg/utils/logger"
-	"img-resizer-api/src/infrastructure/repository/image"
-)
+import "github.com/davidbyttow/govips/v2/vips"
 
 type ImageModel struct {
-	Buffer    []byte // буфер данных изображения
-	Name      string
-	Extension string
-	Height    int
-	Width     int
+	Buffer []byte         // буфер данных изображения
+	Ref    *vips.ImageRef // тип данных необходимый для работы с libvips
+	Name   string
+	Type   vips.ImageType // тип изображения
+	Height int
+	Width  int
 }
 
-// Загрузить изображения по сети и установить необходимые параметры
-func (imageModel *ImageModel) InstallFromNetwork(url string) error {
-	err := image.InstallNet(url)
-	if err != nil {
-		logger.Error(err)
-	}
-	return nil
+type ImageUseCase interface {
+	InstallFromNetwork(url string) (string, error)
 }
-
-// type ImageUseCase interface {
-// 	InstallFromNetwork(url string) error
-// }
