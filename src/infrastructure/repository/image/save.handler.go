@@ -9,21 +9,9 @@ import (
 
 // Сохранить файл в папку
 func (image *ImageModel) saveTo(path string) (string, error) {
-	// var export *vips.ExportParams
-	// switch image.Type {
-	// case 3:
-	// 	export = vips.NewPngExportParams()
-	// case 1:
-	// 	export = vips.NewJpegExportParams()
-	// case 2:
-	// 	export = vips.NewWebpExportParams()
-	// default:
-	// 	export = vips.NewDefaultExportParams()
-	// }
-
-	outBytes, _, errE := image.Ref.ExportPng(vips.NewPngExportParams())
-	if errE != nil {
-		return "", errE
+	outBytes, err := image.getOutBytes()
+	if err != nil {
+		return "", err
 	}
 
 	saveFilePath := "public/" + path
@@ -31,7 +19,7 @@ func (image *ImageModel) saveTo(path string) (string, error) {
 
 	_, errS := os.Stat(saveFilePath)
 	if errS != nil {
-		if err := os.MkdirAll(saveFilePath, 0o700); err != nil {
+		if err := os.MkdirAll(saveFilePath, 0o777); err != nil {
 			return "", err
 		}
 	}
@@ -40,16 +28,48 @@ func (image *ImageModel) saveTo(path string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
-	// file, err := os.OpenFile(saveFilePath+"/"+saveFileName, os.O_WRONLY|os.O_CREATE|os.O_APPEND, os.ModeAppend.Perm())
-	// if err != nil {
-	// 	return "", err
-	// }
-	if err := ioutil.WriteFile(saveFilePath+"/"+saveFileName, outBytes, 0o700); err != nil {
+	if err := ioutil.WriteFile(saveFilePath+"/"+saveFileName, outBytes, 0o777); err != nil {
 		return "", err
 	}
 	if err := file.Close(); err != nil {
 		return "", err
 	}
-	return saveFilePath, nil
+	return saveFilePath + "/" + saveFileName, nil
+}
+
+// получить поток байтов для сохранении в файл
+func (image *ImageModel) getOutBytes() ([]byte, error) {
+	var resultByte []byte
+	// TODO: дописать все остальные типы изображений
+	switch image.Type {
+	case 3:
+		bytes, _, errE := image.Ref.ExportPng(vips.NewPngExportParams())
+		if errE != nil {
+			return resultByte, errE
+		} else {
+			resultByte = bytes
+		}
+	case 1:
+		bytes, _, errE := image.Ref.ExportJpeg(vips.NewJpegExportParams())
+		if errE != nil {
+			return bytes, errE
+		} else {
+			resultByte = bytes
+		}
+	case 2:
+		bytes, _, errE := image.Ref.ExportWebp(vips.NewWebpExportParams())
+		if errE != nil {
+			return bytes, errE
+		} else {
+			resultByte = bytes
+		}
+	default:
+		bytes, _, errE := image.Ref.ExportNative()
+		if errE != nil {
+			return bytes, errE
+		} else {
+			resultByte = bytes
+		}
+	}
+	return resultByte, nil
 }

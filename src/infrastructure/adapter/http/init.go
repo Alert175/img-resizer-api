@@ -42,9 +42,12 @@ func InitHttpAdapter() {
 		log.Fatal("http env not found")
 	}
 
-	appPath := app.Group(pathPrefix)
+	configLogger(app)
+	configCors(app)
 
+	appPath := app.Group(pathPrefix)
 	appPath.Get("/swagger/*", swagger.HandlerDefault)
+	appPath.Static("/", "./public")
 
 	imagerouter.Register(appPath)
 
@@ -53,7 +56,7 @@ func InitHttpAdapter() {
 
 // настройка логгера
 func configLogger(app *fiber.App) {
-	file, err := os.OpenFile("./logs/http.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	file, err := os.OpenFile("./logs/http.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0o666)
 	if err != nil {
 		panic(fmt.Sprintf("error opening file: %v", err))
 	}

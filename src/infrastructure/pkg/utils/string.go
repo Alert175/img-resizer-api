@@ -7,5 +7,5 @@ func ConvertToPathFormat(arg string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return reg.ReplaceAllString(arg, "__"), nil
+	return reg.ReplaceAllString(arg, ""), nil
 }

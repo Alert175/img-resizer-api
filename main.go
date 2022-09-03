@@ -1,6 +1,6 @@
 package main
 
-import "img-resizer-api/src/config"
+import "img-resizer-api/config"
 
 func main() {
 	config.InitConfig()

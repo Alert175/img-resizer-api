@@ -18,7 +18,7 @@ func InitConfig() error {
 }
 
 func envInit() {
-	if err := godotenv.Load("./src/config/.env"); err != nil {
+	if err := godotenv.Load("./config/.env"); err != nil {
 		log.Fatal("Error loading .env file. Error - ", err)
 	} else {
 		fmt.Println("env loaded")
