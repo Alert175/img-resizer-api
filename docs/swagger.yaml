@@ -1,4 +1,195 @@
+definitions:
+  image.Point:
+    properties:
+      format:
+        type: string
+      height:
+        type: integer
+      width:
+        type: integer
+    required:
+    - format
+    type: object
+  imagerouter.LoadFromNetDto:
+    properties:
+      url:
+        type: string
+    required:
+    - url
+    type: object
+  imagerouter.LoadFromNetDtoAndResize:
+    properties:
+      height:
+        type: integer
+      url:
+        type: string
+      width:
+        type: integer
+    required:
+    - url
+    type: object
+  imagerouter.LoadFromNetDtoAndResizeAndConvert:
+    properties:
+      format:
+        type: string
+      height:
+        type: integer
+      url:
+        type: string
+      width:
+        type: integer
+    required:
+    - format
+    - url
+    type: object
+  imagerouter.OptimizeDto:
+    properties:
+      points:
+        items:
+          $ref: '#/definitions/image.Point'
+        type: array
+      url:
+        type: string
+    required:
+    - points
+    - url
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /api/image/v2/image:
+    post:
+      consumes:
+      - application/json
+      description: Загрузить изображение и сохранить на директории сервера
+      parameters:
+      - description: '-'
+        in: body
+        name: data
+        schema:
+          $ref: '#/definitions/imagerouter.LoadFromNetDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: image url
+          schema:
+            type: string
+        "400":
+          description: error
+          schema:
+            type: string
+        "404":
+          description: error
+          schema:
+            type: string
+        "500":
+          description: error
+          schema:
+            type: string
+      summary: Загрузить изображение
+      tags:
+      - Image
+  /api/image/v2/image/optimize:
+    post:
+      consumes:
+      - application/json
+      description: Загрузить изображение и сохранить на директории сервера, сделать
+        ресайз, и перевести в нужный формат
+      parameters:
+      - description: '-'
+        in: body
+        name: data
+        schema:
+          $ref: '#/definitions/imagerouter.OptimizeDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: image url
+          schema:
+            type: string
+        "400":
+          description: error
+          schema:
+            type: string
+        "404":
+          description: error
+          schema:
+            type: string
+        "500":
+          description: error
+          schema:
+            type: string
+      summary: Оптимизировать изображение
+      tags:
+      - Image
+  /api/image/v2/image/resize:
+    post:
+      consumes:
+      - application/json
+      description: Загрузить изображение и сохранить на директории сервера, сделать
+        ресайз
+      parameters:
+      - description: '-'
+        in: body
+        name: data
+        schema:
+          $ref: '#/definitions/imagerouter.LoadFromNetDtoAndResize'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: image url
+          schema:
+            type: string
+        "400":
+          description: error
+          schema:
+            type: string
+        "404":
+          description: error
+          schema:
+            type: string
+        "500":
+          description: error
+          schema:
+            type: string
+      summary: Изменить размер изображения
+      tags:
+      - Image
+  /api/image/v2/image/resize/convert:
+    post:
+      consumes:
+      - application/json
+      description: Загрузить изображение и сохранить на директории сервера, сделать
+        ресайз, и перевести в нужный формат
+      parameters:
+      - description: '-'
+        in: body
+        name: data
+        schema:
+          $ref: '#/definitions/imagerouter.LoadFromNetDtoAndResizeAndConvert'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: image url
+          schema:
+            type: string
+        "400":
+          description: error
+          schema:
+            type: string
+        "404":
+          description: error
+          schema:
+            type: string
+        "500":
+          description: error
+          schema:
+            type: string
+      summary: Конвертировать изображение
+      tags:
+      - Image
 swagger: "2.0"

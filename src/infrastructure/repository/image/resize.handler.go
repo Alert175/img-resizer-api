@@ -24,7 +24,7 @@ func (image *ImageModel) resize(width int, height int) error {
 	if heightScale == 0 {
 		heightScale = widthScale
 	}
-	if err := image.Ref.ResizeWithVScale(heightScale, widthScale, vips.KernelMitchell); err != nil {
+	if err := image.Ref.ResizeWithVScale(heightScale, widthScale, vips.KernelAuto); err != nil {
 		return err
 	}
 	return nil

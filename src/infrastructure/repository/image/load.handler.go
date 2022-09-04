@@ -32,17 +32,20 @@ func (image *ImageModel) loadFormNet(url string) error {
 		return err
 	}
 
-	imageRef, err := vips.LoadImageFromBuffer(body, nil)
+	image.Buffer = body
+
+	return nil
+}
+
+func (image *ImageModel) loadToVips() error {
+	imageRef, err := vips.LoadImageFromBuffer(image.Buffer, nil)
 	if err != nil {
 		return err
 	}
-
 	image.Ref = imageRef
-	image.Buffer = body
 	image.Width = imageRef.Width()
 	image.Height = imageRef.Height()
-	image.Type = vips.DetermineImageType(body)
+	image.Type = vips.DetermineImageType(image.Buffer)
 	image.Name = "origin"
-
 	return nil
 }

@@ -1,6 +1,8 @@
 package image
 
 import (
+	"strings"
+
 	"img-resizer-api/src/domain"
 	"img-resizer-api/src/infrastructure/pkg/utils"
 	"img-resizer-api/src/infrastructure/pkg/utils/logger"
@@ -21,6 +23,9 @@ func (image *ImageModel) InstallFromNetwork(url string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	if err := image.loadToVips(); err != nil {
+		return "", err
+	}
 	result, err := image.saveTo(validPath)
 	if err != nil {
 		return "", err
@@ -37,6 +42,9 @@ func (image *ImageModel) InstallFromNetworkAndResize(url string, height int, wid
 
 	validPath, err := utils.ConvertToPathFormat(url)
 	if err != nil {
+		return "", err
+	}
+	if err := image.loadToVips(); err != nil {
 		return "", err
 	}
 	if err := image.resize(width, height); err != nil {
@@ -60,6 +68,9 @@ func (image *ImageModel) InstallFromNetworkAndResizeAndConvert(url string, heigh
 	if err != nil {
 		return "", err
 	}
+	if err := image.loadToVips(); err != nil {
+		return "", err
+	}
 	if err := image.resize(width, height); err != nil {
 		return "", err
 	}
@@ -77,7 +88,7 @@ func (image *ImageModel) InstallFromNetworkAndResizeAndConvert(url string, heigh
 func (image *ImageModel) InstallFromNetworkAndOptimize(url string, points []Point) ([]string, error) {
 	err := image.loadFormNet(url)
 	if err != nil {
-		logger.Error(err)
+		return nil, err
 	}
 
 	validPath, err := utils.ConvertToPathFormat(url)
@@ -86,20 +97,39 @@ func (image *ImageModel) InstallFromNetworkAndOptimize(url string, points []Poin
 	}
 
 	resultList := []string{}
+	originExtension := strings.Split(url, ".")[len(strings.Split(url, "."))-1]
 
 	for _, point := range points {
-		if err := image.resize(point.Width, point.Height); err != nil {
+		imageElement := ImageModel{}
+		imageElement.Buffer = image.Buffer
+		imageElement.Name = image.Name
+		imageElement.Ref = image.Ref
+		imageElement.Type = image.Type
+		imageElement.Height = image.Height
+		imageElement.Width = image.Width
+
+		if err := imageElement.loadToVips(); err != nil {
 			return nil, err
 		}
-		if err := image.convertTo(point.Format); err != nil {
+		if err := imageElement.resize(point.Width, point.Height); err != nil {
 			return nil, err
 		}
-		result, err := image.saveTo(validPath)
+		if err := imageElement.convertTo(point.Format); err != nil {
+			return nil, err
+		}
+		result, err := imageElement.saveTo(validPath)
 		if err != nil {
 			return nil, err
 		}
 		resultList = append(resultList, result)
-	}
 
+		if errOrigin := imageElement.convertTo(originExtension); err != nil {
+			return nil, errOrigin
+		}
+		_, errOrigin := imageElement.saveTo(validPath)
+		if errOrigin != nil {
+			return nil, err
+		}
+	}
 	return resultList, nil
 }

@@ -20,6 +20,15 @@ func (image *ImageModel) convertTo(format string) error {
 		image.Buffer = bytes
 		image.Type = vips.ImageTypeAVIF
 	case "jpeg":
+		export := vips.NewJpegExportParams()
+		export.Quality = 100
+		bytes, _, err := image.Ref.ExportJpeg(export)
+		if err != nil {
+			return err
+		}
+		image.Buffer = bytes
+		image.Type = vips.ImageTypeJPEG
+	case "jpg":
 		bytes, _, err := image.Ref.ExportJpeg(vips.NewJpegExportParams())
 		if err != nil {
 			return err

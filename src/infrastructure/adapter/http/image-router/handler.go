@@ -10,6 +10,18 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// Create godoc
+// @Summary         Загрузить изображение
+// @Description   	Загрузить изображение и сохранить на директории сервера
+// @Tags            Image
+// @Accept          json
+// @Produce       	json
+// @Param data body LoadFromNetDto false "-"
+// @Success       	200  {string}  string    "image url"
+// @Failure         400  {string}  string    "error"
+// @Failure         404  {string}  string    "error"
+// @Failure         500  {string}  string    "error"
+// @Router         /api/image/v2/image [post]
 func LoadFromNet(ctx *fiber.Ctx) error {
 	image := imageRepo.ImageModel{}
 
@@ -30,6 +42,18 @@ func LoadFromNet(ctx *fiber.Ctx) error {
 	return ctx.JSON(strings.ReplaceAll(result, "public", appPath))
 }
 
+// Create godoc
+// @Summary         Изменить размер изображения
+// @Description   	Загрузить изображение и сохранить на директории сервера, сделать ресайз
+// @Tags            Image
+// @Accept          json
+// @Produce       	json
+// @Param data body LoadFromNetDtoAndResize false "-"
+// @Success       	200  {string}  string    "image url"
+// @Failure         400  {string}  string    "error"
+// @Failure         404  {string}  string    "error"
+// @Failure         500  {string}  string    "error"
+// @Router         /api/image/v2/image/resize [post]
 func LoadFromNetResize(ctx *fiber.Ctx) error {
 	image := imageRepo.ImageModel{}
 
@@ -53,6 +77,18 @@ func LoadFromNetResize(ctx *fiber.Ctx) error {
 	return ctx.JSON(strings.ReplaceAll(result, "public", appPath))
 }
 
+// Create godoc
+// @Summary         Конвертировать изображение
+// @Description   	Загрузить изображение и сохранить на директории сервера, сделать ресайз, и перевести в нужный формат
+// @Tags            Image
+// @Accept          json
+// @Produce       	json
+// @Param data body LoadFromNetDtoAndResizeAndConvert false "-"
+// @Success       	200  {string}  string    "image url"
+// @Failure         400  {string}  string    "error"
+// @Failure         404  {string}  string    "error"
+// @Failure         500  {string}  string    "error"
+// @Router         /api/image/v2/image/resize/convert [post]
 func LoadFromNetResizeConvert(ctx *fiber.Ctx) error {
 	image := imageRepo.ImageModel{}
 
@@ -76,6 +112,18 @@ func LoadFromNetResizeConvert(ctx *fiber.Ctx) error {
 	return ctx.JSON(strings.ReplaceAll(result, "public", appPath))
 }
 
+// Create godoc
+// @Summary         Оптимизировать изображение
+// @Description   	Загрузить изображение и сохранить на директории сервера, сделать ресайз, и перевести в нужный формат
+// @Tags            Image
+// @Accept          json
+// @Produce       	json
+// @Param data body OptimizeDto false "-"
+// @Success       	200  {string}  string    "image urls"
+// @Failure         400  {string}  string    "error"
+// @Failure         404  {string}  string    "error"
+// @Failure         500  {string}  string    "error"
+// @Router         /api/image/v2/image/optimize [post]
 func Optimize(ctx *fiber.Ctx) error {
 	image := imageRepo.ImageModel{}
 

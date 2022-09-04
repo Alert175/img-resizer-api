@@ -11,4 +11,4 @@
 - В файле docker-compose.yaml закоментировать сервис API и оставить конфиг для СУБД
 - Выполнить команду - `docker-compose up --build`
 - Выполнить компанды:
-`go mod vendor`, `swag init --parseDependency --parseInternal -g cmd/main.go`, `air`
+`go mod vendor`, `swag init --parseDependency --parseInternal -g main.go`
