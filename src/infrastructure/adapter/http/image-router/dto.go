@@ -20,3 +20,10 @@ type OptimizeDto struct {
 	LoadFromNetDto
 	Points []imageRepo.Point `json:"points" validate:"required"`
 }
+
+type GetFromNet struct {
+	Url    string `query:"url" validate:"required"`
+	Width  string `query:"width"`
+	Height string `query:"height"`
+	Format string `query:"format"`
+}

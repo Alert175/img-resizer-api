@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   img-resizer-api:
-    image: img-resizer-api:0.0.2
+    image: alert1521/img-resizer-api:0.0.2
     build:
       context: .
       dockerfile: Dockerfile
