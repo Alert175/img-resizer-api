@@ -4,10 +4,9 @@ import (
 	"strings"
 
 	"img-resizer-api/src/domain"
+	"img-resizer-api/src/infrastructure/db/psql/handlers"
 	"img-resizer-api/src/infrastructure/pkg/utils"
 	"img-resizer-api/src/infrastructure/pkg/utils/logger"
-
-	"github.com/davidbyttow/govips/v2/vips"
 )
 
 type ImageModel struct {
@@ -87,14 +86,20 @@ func (image *ImageModel) InstallFromNetworkAndResizeAndConvert(url string, heigh
 }
 
 // Загрузить изображения по сети и установить необходимые параметры
-func (image *ImageModel) InstallFromNetworkAndOptimize(url string, points []Point) ([]byte, error) {
+func (image *ImageModel) InstallFromNetworkAndOptimize(url string, points []Point) ([]string, error) {
 	err := image.loadFormNet(url)
+
+	imageDb := handlers.ImageStore{}
+	imageDb.ImageLog.Url = url
+	imageDb.ImageLog.Status = "success"
+
 	if err != nil {
 		return nil, err
 	}
 
 	validPath, err := utils.ConvertToPathFormat(url)
 	if err != nil {
+		imageDb.ImageLog.Status = "error"
 		return nil, err
 	}
 
@@ -111,49 +116,59 @@ func (image *ImageModel) InstallFromNetworkAndOptimize(url string, points []Poin
 		imageElement.Width = image.Width
 
 		if err := imageElement.loadToVips(); err != nil {
+			imageDb.ImageLog.Status = "error"
 			return nil, err
 		}
 		if err := imageElement.resize(point.Width, point.Height); err != nil {
+			imageDb.ImageLog.Status = "error"
 			return nil, err
 		}
 		if err := imageElement.convertTo(point.Format); err != nil {
+			imageDb.ImageLog.Status = "error"
 			return nil, err
 		}
 		result, err := imageElement.saveTo(validPath)
 		if err != nil {
+			imageDb.ImageLog.Status = "error"
 			return nil, err
 		}
 		resultList = append(resultList, result)
 
 		if errOrigin := imageElement.convertTo(originExtension); err != nil {
+			imageDb.ImageLog.Status = "error"
 			return nil, errOrigin
 		}
 		_, errOrigin := imageElement.saveTo(validPath)
 		if errOrigin != nil {
+			imageDb.ImageLog.Status = "error"
 			return nil, err
 		}
 	}
+
+	if err := imageDb.CreateUpdate(); err != nil {
+		return nil, err
+	}
+
 	return resultList, nil
 }
 
 // Загрузить изображения по сети и установить необходимые параметры
-func (image *ImageModel) GetFromNetworkAndResizeAndConvert(url string, height int, width int, format string) (*vips.ImageRef, error) {
-	err := image.loadFormNet(url)
-	if err != nil {
-		logger.Error(err)
-	}
-	if err := image.loadToVips(); err != nil {
-		return nil, err
-	}
-	if err := image.resize(width, height); err != nil {
-		return nil, err
-	}
-	if err := image.convertTo(format); err != nil {
-		return nil, err
-	}
-	bytes, err := image.getOutBytes()
-	if err != nil {
-		
-	}
-	return nil, nil
-}
+// func (image *ImageModel) GetFromNetworkAndResizeAndConvert(url string, height int, width int, format string) (*vips.ImageRef, error) {
+// 	err := image.loadFormNet(url)
+// 	if err != nil {
+// 		logger.Error(err)
+// 	}
+// 	if err := image.loadToVips(); err != nil {
+// 		return nil, err
+// 	}
+// 	if err := image.resize(width, height); err != nil {
+// 		return nil, err
+// 	}
+// 	if err := image.convertTo(format); err != nil {
+// 		return nil, err
+// 	}
+// 	bytes, err := image.getOutBytes()
+// 	if err != nil {
+// 	}
+// 	return nil, nil
+// }

@@ -2,3 +2,6 @@ vendor
 public
 .vscode
 logs
+
+local_db
+config/.env

@@ -8,10 +8,12 @@ import (
 	"github.com/joho/godotenv"
 
 	"img-resizer-api/src/infrastructure/adapter/http"
+	"img-resizer-api/src/infrastructure/db/psql"
 )
 
 func InitConfig() error {
 	envInit()
+	psql.DbInit()
 	vips.Startup(nil)
 	defer http.InitHttpAdapter()
 	return nil

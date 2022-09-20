@@ -2,7 +2,6 @@ package imagerouter
 
 import (
 	"os"
-	"strconv"
 	"strings"
 
 	"img-resizer-api/src/infrastructure/pkg/utils"
@@ -161,21 +160,21 @@ func Optimize(ctx *fiber.Ctx) error {
 // @Failure         404  {string}  string    "error"
 // @Failure         500  {string}  string    "error"
 // @Router         /api/image/v2/image/optimize [post]
-func GetFormNet(ctx *fiber.Ctx) error {
-	image := imageRepo.ImageModel{}
-	query := GetFromNet{}
+// func GetFormNet(ctx *fiber.Ctx) error {
+// 	image := imageRepo.ImageModel{}
+// 	query := GetFromNet{}
 
-	if err := ctx.QueryParser(query); err != nil {
-		return ctx.Status(400).JSON(err)
-	}
+// 	if err := ctx.QueryParser(query); err != nil {
+// 		return ctx.Status(400).JSON(err)
+// 	}
 
-	h, errH := strconv.Atoi(query.Height)
-	w, errW := strconv.Atoi(query.Width)
+// 	h, errH := strconv.Atoi(query.Height)
+// 	w, errW := strconv.Atoi(query.Width)
 
-	if errH != nil || errW != nil {
-		return ctx.Status(400).JSON("not valid height or width")
-	}
+// 	if errH != nil || errW != nil {
+// 		return ctx.Status(400).JSON("not valid height or width")
+// 	}
 
-	image.GetFromNetworkAndResizeAndConvert(query.Url, h, w, query.Format)
-	ctx.Write()
-}
+// 	image.GetFromNetworkAndResizeAndConvert(query.Url, h, w, query.Format)
+// 	ctx.Write()
+// }

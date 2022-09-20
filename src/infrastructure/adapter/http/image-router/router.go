@@ -9,5 +9,5 @@ func Register(httpPath fiber.Router) {
 	router.Post("/resize", LoadFromNetResize)
 	router.Post("/resize/convert", LoadFromNetResizeConvert)
 	router.Post("/optimize", Optimize)
-	router.Post("/get", GetFormNet)
+	// router.Post("/get", GetFormNet)
 }
