@@ -1,6 +1,6 @@
 module img-resizer-api
 
-go 1.19
+go 1.18
 
 require (
 	github.com/davidbyttow/govips/v2 v2.11.0
