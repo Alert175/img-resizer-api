@@ -1,15 +1,15 @@
 version: "3.7"
 
 services:
-  # img-resizer-api:
-  #   image: img-resizer-api:0.1.0
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   volumes:
-  #     - ./public:/app/public
-  #   ports:
-  #     - "8114:8114"
+  img-resizer-api:
+    image: img-resizer-api:0.1.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./public:/app/public
+    ports:
+      - "8114:8114"
   database:
     image: postgres:14-alpine
     restart: always
