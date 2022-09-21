@@ -5,3 +5,4 @@ logs
 
 local_db
 config/.env
+config/.env
