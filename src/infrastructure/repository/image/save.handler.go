@@ -7,6 +7,8 @@ import (
 	"github.com/davidbyttow/govips/v2/vips"
 )
 
+const IMAGE_QUALITY = 95
+
 // Сохранить файл в папку
 func (image *ImageModel) saveTo(path string) (string, error) {
 	outBytes, err := image.getOutBytes()
@@ -42,28 +44,36 @@ func (image *ImageModel) getOutBytes() ([]byte, error) {
 	var resultByte []byte
 	switch image.Type {
 	case 3:
-		bytes, _, errE := image.Ref.ExportPng(vips.NewPngExportParams())
+		param := vips.NewPngExportParams()
+		param.Quality = IMAGE_QUALITY
+		bytes, _, errE := image.Ref.ExportPng(param)
 		if errE != nil {
 			return resultByte, errE
 		} else {
 			resultByte = bytes
 		}
 	case 1:
-		bytes, _, errE := image.Ref.ExportJpeg(vips.NewJpegExportParams())
+		param := vips.NewJpegExportParams()
+		param.Quality = IMAGE_QUALITY
+		bytes, _, errE := image.Ref.ExportJpeg(param)
 		if errE != nil {
 			return bytes, errE
 		} else {
 			resultByte = bytes
 		}
 	case 2:
-		bytes, _, errE := image.Ref.ExportWebp(vips.NewWebpExportParams())
+		param := vips.NewWebpExportParams()
+		param.Quality = IMAGE_QUALITY
+		bytes, _, errE := image.Ref.ExportWebp(param)
 		if errE != nil {
 			return bytes, errE
 		} else {
 			resultByte = bytes
 		}
 	case 11:
-		bytes, _, errE := image.Ref.ExportAvif(vips.NewAvifExportParams())
+		param := vips.NewAvifExportParams()
+		param.Quality = IMAGE_QUALITY
+		bytes, _, errE := image.Ref.ExportAvif(param)
 		if errE != nil {
 			return bytes, errE
 		} else {
