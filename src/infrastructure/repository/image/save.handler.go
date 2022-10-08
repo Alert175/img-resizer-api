@@ -7,7 +7,7 @@ import (
 	"github.com/davidbyttow/govips/v2/vips"
 )
 
-const IMAGE_QUALITY = 95
+const IMAGE_QUALITY = 100
 
 // Сохранить файл в папку
 func (image *ImageModel) saveTo(path string) (string, error) {
