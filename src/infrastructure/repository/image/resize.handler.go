@@ -22,10 +22,10 @@ func (image *ImageModel) resize(width int, height int) error {
 		validHeight = image.Height
 	}
 	if validWidth == 0 {
-		validWidth = image.Width / int(image.Height/height)
+		validWidth = int(float64(image.Width) / (float64(image.Height) / float64(height)))
 	}
 	if validHeight == 0 {
-		validHeight = image.Height / int(image.Width/width)
+		validHeight = int(float64(image.Height) / (float64(image.Width) / float64(width)))
 	}
 	fmt.Printf("validWidth: %v\n", validWidth)
 	fmt.Printf("validHeight: %v\n", validHeight)
