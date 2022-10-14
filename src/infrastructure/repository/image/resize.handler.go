@@ -1,7 +1,6 @@
 package image
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/davidbyttow/govips/v2/vips"
@@ -27,8 +26,7 @@ func (image *ImageModel) resize(width int, height int) error {
 	if validHeight == 0 {
 		validHeight = int(float64(image.Height) / (float64(image.Width) / float64(width)))
 	}
-	fmt.Printf("validWidth: %v\n", validWidth)
-	fmt.Printf("validHeight: %v\n", validHeight)
+
 	if err := image.Ref.Thumbnail(validWidth, validHeight, vips.InterestingEntropy); err != nil {
 		return err
 	}
