@@ -27,3 +27,10 @@ type GetFromNet struct {
 	Height string `query:"height"`
 	Format string `query:"format"`
 }
+
+type RequestLoadOptimize struct {
+	File   string `json:"file"`
+	Width  int    `json:"width"`
+	Height int    `json:"height"`
+	Format string `json:"format"`
+}

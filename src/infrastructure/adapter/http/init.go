@@ -33,7 +33,9 @@ import (
 
 // @securityDefinitions.basic  BasicAuth
 func InitHttpAdapter() {
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		BodyLimit: 200 * 1024 * 1024, // this is the default limit of 4MB
+	})
 
 	pathPrefix := os.Getenv("HTTP_PATH_PREFIX")
 	port := os.Getenv("HTTP_APP_PORT")

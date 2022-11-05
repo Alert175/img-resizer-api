@@ -92,7 +92,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "image url",
+                        "description": "image urls",
                         "schema": {
                             "type": "string"
                         }
@@ -104,6 +104,51 @@ const docTemplate = `{
                         }
                     },
                     "404": {
+                        "description": "error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/image/v2/image/optimize/load": {
+            "post": {
+                "description": "Загрузить изображение, сделать ресайз, и перевести в нужный формат",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Image"
+                ],
+                "summary": "Загрузить и оптимизировать изображение",
+                "parameters": [
+                    {
+                        "description": "Загрузить FormData c файлом",
+                        "name": "data",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/imagerouter.RequestLoadOptimize"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "файл",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
                         "description": "error",
                         "schema": {
                             "type": "string"
@@ -303,6 +348,23 @@ const docTemplate = `{
                 },
                 "url": {
                     "type": "string"
+                }
+            }
+        },
+        "imagerouter.RequestLoadOptimize": {
+            "type": "object",
+            "properties": {
+                "file": {
+                    "type": "string"
+                },
+                "format": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "integer"
+                },
+                "width": {
+                    "type": "integer"
                 }
             }
         }
