@@ -54,6 +54,17 @@ definitions:
     - points
     - url
     type: object
+  imagerouter.RequestLoadOptimize:
+    properties:
+      file:
+        type: string
+      format:
+        type: string
+      height:
+        type: integer
+      width:
+        type: integer
+    type: object
 info:
   contact: {}
 paths:
@@ -106,7 +117,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: image url
+          description: image urls
           schema:
             type: string
         "400":
@@ -122,6 +133,35 @@ paths:
           schema:
             type: string
       summary: Оптимизировать изображение
+      tags:
+      - Image
+  /api/image/v2/image/optimize/load:
+    post:
+      consumes:
+      - application/json
+      description: Загрузить изображение, сделать ресайз, и перевести в нужный формат
+      parameters:
+      - description: Загрузить FormData c файлом
+        in: body
+        name: data
+        schema:
+          $ref: '#/definitions/imagerouter.RequestLoadOptimize'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: файл
+          schema:
+            type: string
+        "400":
+          description: error
+          schema:
+            type: string
+        "500":
+          description: error
+          schema:
+            type: string
+      summary: Загрузить и оптимизировать изображение
       tags:
       - Image
   /api/image/v2/image/resize:

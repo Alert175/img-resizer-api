@@ -1,6 +1,7 @@
 package image
 
 import (
+	"mime/multipart"
 	"strings"
 
 	"img-resizer-api/src/domain"
@@ -150,6 +151,24 @@ func (image *ImageModel) InstallFromNetworkAndOptimize(url string, points []Poin
 	}
 
 	return resultList, nil
+}
+
+// Получить файл и оптимизировать его
+func (image *ImageModel) OptimizeLoad(file *multipart.FileHeader, height int, width int, format string) error {
+	if err := image.loadFileToImage(file); err != nil {
+		return err
+	}
+	if height != 0 || width != 0 {
+		if err := image.resize(width, height); err != nil {
+			return err
+		}
+	}
+	if format != "" {
+		if err := image.convertTo(format); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // Загрузить изображения по сети и установить необходимые параметры

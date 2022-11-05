@@ -1,7 +1,11 @@
 package imagerouter
 
 import (
+	"errors"
+	"fmt"
+	"net/http"
 	"os"
+	"strconv"
 	"strings"
 
 	"img-resizer-api/src/infrastructure/pkg/utils"
@@ -149,32 +153,49 @@ func Optimize(ctx *fiber.Ctx) error {
 }
 
 // Create godoc
-// @Summary         Оптимизировать изображение
-// @Description   	Загрузить изображение и сохранить на директории сервера, сделать ресайз, и перевести в нужный формат
+// @Summary         Загрузить и оптимизировать изображение
+// @Description   	Загрузить изображение, сделать ресайз, и перевести в нужный формат
 // @Tags            Image
 // @Accept          json
 // @Produce       	json
-// @Param data body OptimizeDto false "-"
-// @Success       	200  {string}  string    "image urls"
+// @Param data body RequestLoadOptimize false "Загрузить FormData c файлом"
+// @Success       	200  {string}  string    "файл"
 // @Failure         400  {string}  string    "error"
-// @Failure         404  {string}  string    "error"
 // @Failure         500  {string}  string    "error"
-// @Router         /api/image/v2/image/optimize [post]
-// func GetFormNet(ctx *fiber.Ctx) error {
-// 	image := imageRepo.ImageModel{}
-// 	query := GetFromNet{}
+// @Router         /api/image/v2/image/optimize/load [post]
+func OptimizeLoad(ctx *fiber.Ctx) error {
+	file, err := ctx.FormFile("file")
+	if err != nil {
+		return err
+	}
+	height := ctx.FormValue("height")
+	width := ctx.FormValue("width")
+	if height == "" {
+		height = "0"
+	}
+	if width == "" {
+		width = "0"
+	}
+	validHeigth, err1 := strconv.Atoi(height)
+	validWidth, err2 := strconv.Atoi(width)
 
-// 	if err := ctx.QueryParser(query); err != nil {
-// 		return ctx.Status(400).JSON(err)
-// 	}
+	format := ctx.FormValue("format")
 
-// 	h, errH := strconv.Atoi(query.Height)
-// 	w, errW := strconv.Atoi(query.Width)
+	if err1 != nil || err2 != nil {
+		return errors.New("fail validate heigth or width arguments")
+	}
 
-// 	if errH != nil || errW != nil {
-// 		return ctx.Status(400).JSON("not valid height or width")
-// 	}
+	image := imageRepo.ImageModel{}
+	if err := image.OptimizeLoad(file, validHeigth, validWidth, format); err != nil {
+		return err
+	}
 
-// 	image.GetFromNetworkAndResizeAndConvert(query.Url, h, w, query.Format)
-// 	ctx.Write()
-// }
+	fileName, _, err := utils.SeparateFileName(file.Filename)
+	if err != nil {
+		return err
+	}
+
+	ctx.Response().Header.Add("Content-Type", http.DetectContentType(image.Buffer))
+	ctx.Response().Header.Add("Content-Desposition", fmt.Sprintf("attachment; filename=%s%s", fileName, image.Type.FileExt()))
+	return ctx.Send(image.Buffer)
+}
