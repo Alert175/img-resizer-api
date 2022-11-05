@@ -2,6 +2,7 @@ package imagerouter
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
 	"strconv"
@@ -189,7 +190,12 @@ func OptimizeLoad(ctx *fiber.Ctx) error {
 		return err
 	}
 
+	fileName, _, err := utils.SeparateFileName(file.Filename)
+	if err != nil {
+		return err
+	}
+
 	ctx.Response().Header.Add("Content-Type", http.DetectContentType(image.Buffer))
-	ctx.Response().Header.Add("Content-Desposition", http.DetectContentType(image.Buffer))
-	return ctx.JSON("OK")
+	ctx.Response().Header.Add("Content-Desposition", fmt.Sprintf("attachment; filename=%s%s", fileName, image.Type.FileExt()))
+	return ctx.Send(image.Buffer)
 }
